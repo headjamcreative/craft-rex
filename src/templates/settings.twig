@@ -1,0 +1,60 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Craft REX plugin for Craft CMS 3.x
+ *
+ * Craft REX Settings.twig
+ *
+ * @author    Ben Norman
+ * @copyright Copyright (c) 2020 Ben Norman
+ * @link      https://www.headjam.com.au
+ * @package   CraftRex
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{{ 
+  forms.autosuggestField({
+    label: 'REX Token',
+    instructions: 'The authorization token for queries.',
+    id: 'rexAuthToken',
+    name: 'rexAuthToken',
+    value: settings['rexAuthToken'],
+    suggestEnvVars: true
+  })
+}}
+
+{{ 
+  forms.autosuggestField({
+    label: 'REX Agency ID',
+    instructions: 'The agency ID to query REX for listings.',
+    id: 'rexAgencyId',
+    name: 'rexAgencyId',
+    value: settings['rexAgencyId'],
+    suggestEnvVars: true
+  })
+}}
+
+{{ 
+  forms.autosuggestField({
+    label: 'REX Username',
+    instructions: 'The email address or username you use to log into REX.',
+    id: 'rexUsername',
+    name: 'rexUsername',
+    value: settings['rexUsername'],
+    suggestEnvVars: true
+  })
+}}
+
+{{ 
+  forms.autosuggestField({
+    label: 'REX Password',
+    instructions: 'The password you use to log into REX.',
+    id: 'rexPassword',
+    name: 'rexPassword',
+    value: settings['rexPassword'],
+    suggestEnvVars: true
+    })
+}}
