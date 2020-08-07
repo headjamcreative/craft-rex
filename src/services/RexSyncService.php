@@ -60,7 +60,7 @@ class RexSyncService extends Component
         CraftRex::getInstance()->RexListingService->save($model);
       }
       if ($limit + $offset < $result['data']['result']['total']) {
-        return $this->getRexListings($limit, $limit + $offset);
+        return $this->syncRexListings($limit, $limit + $offset);
       }
       return true;
     }

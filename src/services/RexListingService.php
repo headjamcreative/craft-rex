@@ -11,12 +11,13 @@
 namespace headjam\craftrex\services;
 
 use headjam\craftrex\CraftRex;
-
-use Craft;
-use craft\base\Component;
 use headjam\craftrex\events\RexListing\SaveEvent;
 use headjam\craftrex\models\RexListingModel;
 use headjam\craftrex\records\RexListingRecord;
+
+use Craft;
+use craft\base\Component;
+use craft\db\Query;
 
 /**
  * REX Listing Service
@@ -38,22 +39,31 @@ class RexListingService extends Component
   const EVENT_AFTER_SAVE = 'afterSave';
   const EVENT_BEFORE_SAVE = 'beforeSave';
 
-
-
-  // Public Methods
-  // =========================================================================
   /** 
    * @var RexListingModel[]
    */
   private static $listingsById = [];
+  
+  
+
+  // Public Methods
+  // =========================================================================
+  private function getRecordData($record)
+  {
+    return [
+      'listing_id' => $record->getAttribute('listing_id'),
+      'listing_status' => $record->getAttribute('listing_status'),
+      'listing_details' => $record->getAttribute('listing_details'),
+    ];
+  }
 
   
 
   // Public Methods
   // =========================================================================
   /**
+   * Saves the given model as an ActivRecord to the database.
    * @param RexListingModel $model
-   *
    * @return bool
    * @throws \Exception
    */
@@ -65,7 +75,6 @@ class RexListingService extends Component
     } else {
       $record = RexListingRecord::findOne(['listing_id' => $model->listing_id]);
     }
-
     if (!$record) {
       $record = RexListingRecord::create();
     }
@@ -103,5 +112,41 @@ class RexListingService extends Component
       }
     }
     return false;
+  }
+
+  /** 
+   * Find the given listing by id.
+   * @param int $listingId - The id to query.
+   * @return RexListingModel|null
+   */
+  public function findById(int $listingId)
+  {
+    $record = RexListingRecord::findOne(['listing_id' => $listingId]);
+    if (!$record) {
+      $apiResult = CraftRex::getInstance()->RexSyncService->syncRexListing($listingId);
+      if ($apiResult) {
+        $record = RexListingRecord::findOne(['listing_id' => $listingId]);
+      }
+    }
+    if (!$record || empty($record)) {
+      $record = new RexListingRecord();
+      $record->listing_id = $listingId;
+    }
+    return $this->getRecordData($record);
+  }
+
+  /** 
+   * Find all property listings.
+   * @param string $status - Optional. The status to query listings by.
+   * @return RexListingModel[]
+   */
+  public function findAll(?string $status=null)
+  {
+    if ($status) {
+      $records = RexListingRecord::find(['listing_status' => $status])->all();
+    } else {
+      $records = RexListingRecord::find()->all();
+    }
+    return array_map(array($this, 'getRecordData'), $records);
   }
 }

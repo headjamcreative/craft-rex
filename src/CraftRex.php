@@ -10,13 +10,18 @@
 
 namespace headjam\craftrex;
 
+use headjam\craftrex\models\Settings;
 use headjam\craftrex\services\RexApiService as RexApiService;
 use headjam\craftrex\services\RexListingService as RexListingService;
 use headjam\craftrex\services\RexSyncService as RexSyncService;
-use headjam\craftrex\models\Settings;
+use headjam\craftrex\variables\RexListingVariable as RexListingVariable;
 
 use Craft;
 use craft\base\Plugin;
+use craft\web\twig\variables\CraftVariable;
+
+use yii\base\Event;
+
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -102,15 +107,27 @@ class CraftRex extends Plugin
     parent::init();
     self::$plugin = $this;
 
+    // Set the services
     $this->setComponents([
       'RexApiService' => RexApiService::class,
       'RexListingService' => RexListingService::class,
       'RexSyncService' => RexSyncService::class
     ]);
 
+    // Register the variable
+    Event::on(
+      CraftVariable::class,
+      CraftVariable::EVENT_INIT,
+      function (Event $event) {
+          /** @var CraftVariable $variable */
+          $variable = $event->sender;
+          $variable->set('craftrex', RexListingVariable::class);
+      }
+    );
+
     // Init the customer logger
     $fileTarget = new \craft\log\FileTarget([
-      'logFile' => Craft::getAlias('@storage/logs/craftRex.log'),
+      'logFile' => Craft::getAlias('@storage/logs/craftrex.log'),
       'categories' => ['craft-rex']
     ]);
     Craft::getLogger()->dispatcher->targets[] = $fileTarget;
