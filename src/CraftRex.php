@@ -35,7 +35,7 @@ use yii\base\Event;
  *
  * @author    Ben Norman
  * @package   CraftRex
- * @since     1.0.0
+ * @since     1.0.2
  *
  * @property  RexApiService $rexApiService
  * @property  RexListingService $rexListingService
@@ -64,7 +64,7 @@ class CraftRex extends Plugin
    *
    * @var string
    */
-  public $schemaVersion = '1.0.0';
+  public $schemaVersion = '1.0.2';
 
   /**
    * Set to `true` if the plugin should have a settings view in the control panel.

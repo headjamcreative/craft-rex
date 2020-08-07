@@ -22,7 +22,7 @@ use craft\web\Controller;
  *
  * @author    Ben Norman
  * @package   CraftRex
- * @since     1.0.0
+ * @since     1.0.2
  */
 class DefaultController extends Controller
 {
