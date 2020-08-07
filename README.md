@@ -2,8 +2,6 @@
 
 A plugin that syncs REX data with Craft.
 
-![Screenshot](resources/img/plugin-logo.png)
-
 ## Requirements
 
 This plugin requires Craft CMS 3.0.0-beta.23 or later.
@@ -21,23 +19,5 @@ To install the plugin, follow these instructions.
         composer require headjamcreative/craft-rex
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Craft REX.
-
-## Craft REX Overview
-
--Insert text here-
-
-## Configuring Craft REX
-
--Insert text here-
-
-## Using Craft REX
-
--Insert text here-
-
-## Craft REX Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
 
 Brought to you by [Ben Norman](https://www.headjam.com.au)
