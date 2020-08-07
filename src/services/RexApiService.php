@@ -45,7 +45,8 @@ class RexApiService extends Component
    * @param array [$postBody] - Any data to submit with the query.
    * @return array An array containing a status and either error or data properties.
    */
-  public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody) {
+  public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody) 
+  {
     $token = CraftRex::getInstance()->getSettings()->rexAuthToken;
     if (!(isset($token) && $token !== '')) {
       $token = $this->rexLogin();
@@ -113,14 +114,15 @@ class RexApiService extends Component
    * Login to the REX system to query data.
    * @return string The auth token.
    */
-  private function rexLogin() {
+  private function rexLogin()
+  {
     $auth = [
       'email' => CraftRex::getInstance()->getSettings()->getRexUsername(),
       'password' => CraftRex::getInstance()->getSettings()->getRexPassword(),
       'token_lifetime' => 5
     ];
     $response = $this->rexRequest('POST', $this->authEndpoint, $auth, null);
-    if ($response['success'] && $response['data'] && $response['data']['result']) {
+    if ($response['success'] &&  $response['data']['result']) {
       $token = $response['data']['result'];
       $plugins = new Plugins();
       $plugins->savePluginSettings(CraftRex::getInstance(), ['rexAuthToken' => $token]);

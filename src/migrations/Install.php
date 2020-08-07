@@ -108,9 +108,10 @@ class Install extends Migration
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
-                // Custom columns in the table
-                    'siteId' => $this->integer()->notNull(),
-                    'some_field' => $this->string(255)->notNull()->defaultValue(''),
+                    // Custom columns in the table
+                    'listing_id' => $this->integer()->notNull(),
+                    'listing_details' => $this->json()->notNull(),
+                    'listing_status' => $this->string(100)->notNull(),
                 ]
             );
         }
@@ -129,11 +130,15 @@ class Install extends Migration
         $this->createIndex(
             $this->db->getIndexName(
                 '{{%craftrex_rexlistingrecord}}',
-                'some_field',
+                'listing_id',
+                'listing_details',
+                'listing_status',
                 true
             ),
             '{{%craftrex_rexlistingrecord}}',
-            'some_field',
+            'listing_id',
+            'listing_details',
+            'listing_status',
             true
         );
         // Additional commands depending on the db driver

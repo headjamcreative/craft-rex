@@ -30,6 +30,7 @@ use craft\db\ActiveRecord;
  * @property int    $id
  * @property int    $listing_id
  * @property string $listing_details
+ * @property string $listing_status
  *
  * @author    Ben Norman
  * @package   CraftRex
@@ -59,6 +60,13 @@ class RexListingRecord extends ActiveRecord
    * @var string
    */
   public $listing_details;
+
+  /**
+   * The status of the listing.
+   *
+   * @var string
+   */
+  public $listing_status;
 
   // Public Static Methods
   // =========================================================================

@@ -13,7 +13,6 @@ namespace headjam\craftrex;
 use headjam\craftrex\services\RexApiService as RexApiService;
 use headjam\craftrex\services\RexListingService as RexListingService;
 use headjam\craftrex\services\RexSyncService as RexSyncService;
-use headjam\craftrex\models\RexListingModel;
 use headjam\craftrex\models\Settings;
 
 use Craft;
@@ -138,15 +137,6 @@ class CraftRex extends Plugin
    */
   protected function settingsHtml(): string
   {
-    $testCall = CraftRex::getInstance()->RexApiService->rexAuthenticatedRequest('POST', 'published-listings/search', null);
-    if ($testCall['success'] && $testCall['data'] && $testCall['data']['result'] && $testCall['data']['result']['rows'] && $testCall['data']['result']['rows'][0]) {
-      CraftRex::log($testCall['data']['result']['rows'][0]);
-      $entry = $testCall['data']['result']['rows'][0];
-      $model = RexListingModel::create();
-      $model->listing_id = $entry['property_id'];
-      $model->listing_details = \GuzzleHttp\json_encode($entry);
-      CraftRex::getInstance()->RexListingService->save($model);
-    }
     return Craft::$app->view->renderTemplate(
       'craft-rex/settings',
       [

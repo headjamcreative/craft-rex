@@ -14,6 +14,7 @@ use headjam\craftrex\CraftRex;
 
 use Craft;
 use craft\base\Component;
+use headjam\craftrex\events\RexListing\SaveEvent;
 use headjam\craftrex\models\RexListingModel;
 use headjam\craftrex\records\RexListingRecord;
 
@@ -32,6 +33,13 @@ use headjam\craftrex\records\RexListingRecord;
  */
 class RexListingService extends Component
 {
+  // Private Properties
+  // =========================================================================
+  const EVENT_AFTER_SAVE = 'afterSave';
+  const EVENT_BEFORE_SAVE = 'beforeSave';
+
+
+
   // Public Methods
   // =========================================================================
   /** 
@@ -55,12 +63,16 @@ class RexListingService extends Component
     if (!$isNew) {
       $record = RexListingRecord::findOne(['id' => $model->id]);
     } else {
+      $record = RexListingRecord::findOne(['listing_id' => $model->listing_id]);
+    }
+
+    if (!$record) {
       $record = RexListingRecord::create();
     }
 
-    $record->listing_id = $model->listing_id;
-    $record->listing_details = $model->listing_details;
-    
+    $record->setAttribute('listing_id', $model->listing_id);
+    $record->setAttribute('listing_details', $model->listing_details);
+    $record->setAttribute('listing_status', $model->listing_status);
     $record->validate();
     $model->addErrors($record->getErrors());
 
@@ -70,7 +82,6 @@ class RexListingService extends Component
     if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
       $transaction = null;
       if (!\Craft::$app->getDb()->getTransaction()) {
-        //we start new transaction only in case there is none, otherwise we are not ones responsible for commit
         $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
       }
       try {
