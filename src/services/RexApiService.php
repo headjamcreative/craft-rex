@@ -11,6 +11,7 @@
 namespace headjam\craftrex\services;
 
 use headjam\craftrex\CraftRex;
+use headjam\craftrex\models\RexListingModel;
 
 use Craft;
 use craft\base\Component;
@@ -38,14 +39,14 @@ class RexApiService extends Component
 
   // Public Methods
   // =========================================================================
-  /** 
+  /**
    * Make an authenticated REX api request.
    * @param string $method - The method to query.
    * @param string $endpoint - The endpoint to query.
    * @param array [$postBody] - Any data to submit with the query.
    * @return array An array containing a status and either error or data properties.
    */
-  public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody) 
+  public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody)
   {
     $token = CraftRex::getInstance()->getSettings()->rexAuthToken;
     if (!(isset($token) && $token !== '')) {
@@ -60,11 +61,64 @@ class RexApiService extends Component
     ];
   }
 
+  /**
+   * Query all the published listings on the REX service.
+   * @param int $limit - The limit to use in the query. Defaults to 100.
+   * @param int $offset - The offset to use in the query. Defaults to 0.
+   */
+  public function findAll(?int $limit=100, ?int $offset=0, ?array $accumulator=[])
+  {
+    $result = $this->rexAuthenticatedRequest('POST', 'published-listings/search', [
+      'limit' => $limit,
+      'offset' =>  $offset,
+      'order_by' => [ 'authority_date_start' => 'desc' ],
+      'result_format' => 'website_overrides_applied',
+      // 'criteria' => [
+      //   [
+      //     'name' => 'system_publication_status',
+      //     'type' => '=',
+      //     'value' => 'published'
+      //   ],
+      //   [
+      //     name => 'system_listing_state',
+      //     type => '=',
+      //     value => 'sold'
+      //   ]
+      // ],
+      'extra_options' => [
+        'extra_fields' => ['advert_internet', 'images']
+      ]
+    ]);
+    if ($result['success'] && $result['data']['result']) {
+      foreach ($result['data']['result']['rows'] as $entry) {
+        $model = RexListingModel::create($entry);
+        $accumulator[] = $model;
+      }
+      if ($limit + $offset < $result['data']['result']['total']) {
+        return $this->findAll($limit, $limit + $offset, $accumulator);
+      }
+    }
+    return $accumulator;
+  }
+
+  /**
+   * Query the specific published listings on the REX service.
+   * @param int $listingId - The ID to query REX by.
+   */
+  public function findById(int $listingId)
+  {
+    $result = $this->rexAuthenticatedRequest('POST', 'listings/read', [ 'id' => $listingId ]);
+    if ($result['success'] && $result['data']['result']) {
+      return RexListingModel::create($result['data']['result']);
+    }
+    return null;
+  }
+
 
 
   // Private Methods
   // =========================================================================
-  /** 
+  /**
    * Format a REX api request.
    * @param string $method - The method to query.
    * @param string $endpoint - The endpoint to query.
@@ -118,8 +172,7 @@ class RexApiService extends Component
   {
     $auth = [
       'email' => CraftRex::getInstance()->getSettings()->getRexUsername(),
-      'password' => CraftRex::getInstance()->getSettings()->getRexPassword(),
-      'token_lifetime' => 5
+      'password' => CraftRex::getInstance()->getSettings()->getRexPassword()
     ];
     $response = $this->rexRequest('POST', $this->authEndpoint, $auth, null);
     if ($response['success'] &&  $response['data']['result']) {

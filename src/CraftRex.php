@@ -10,11 +10,11 @@
 
 namespace headjam\craftrex;
 
-use headjam\craftrex\models\Settings;
 use headjam\craftrex\services\RexApiService as RexApiService;
 use headjam\craftrex\services\RexListingService as RexListingService;
 use headjam\craftrex\services\RexSyncService as RexSyncService;
-use headjam\craftrex\variables\RexListingVariable as RexListingVariable;
+use headjam\craftrex\variables\CraftRexVariable;
+use headjam\craftrex\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
@@ -119,9 +119,9 @@ class CraftRex extends Plugin
       CraftVariable::class,
       CraftVariable::EVENT_INIT,
       function (Event $event) {
-          /** @var CraftVariable $variable */
-          $variable = $event->sender;
-          $variable->set('craftrex', RexListingVariable::class);
+        /** @var CraftVariable $variable */
+        $variable = $event->sender;
+        $variable->set('craftrex', CraftRexVariable::class);
       }
     );
 

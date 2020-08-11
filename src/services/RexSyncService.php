@@ -40,49 +40,21 @@ class RexSyncService extends Component
    */
   public function syncRexListings(int $limit=100, int $offset=0)
   {
-    $result = CraftRex::getInstance()->RexApiService->rexAuthenticatedRequest('POST', 'listings/search', [
-      'limit' => $limit,
-      'offset' =>  $offset,
-      'criteria' => [
-        [
-          'name' => 'system_publication_status',
-          'type' => '=',
-          'value' => 'published'
-        ]
-      ]
-    ]);
-    if ($result['success'] && $result['data']['result']) {
-      foreach ($result['data']['result']['rows'] as $entry) {
-        $model = RexListingModel::create();
-        $model->listing_id = $entry['id'];
-        $model->listing_details = \GuzzleHttp\json_encode($entry);
-        $model->listing_status = $entry['system_listing_state'];
-        CraftRex::getInstance()->RexListingService->save($model);
-      }
-      if ($limit + $offset < $result['data']['result']['total']) {
-        return $this->syncRexListings($limit, $limit + $offset);
-      }
-      return true;
+    $entries = CraftRex::getInstance()->RexApiService->findAll($limit, $offset);
+    foreach ($entries as $entry) {
+      CraftRex::getInstance()->RexListingService->save($entry);
     }
-    return false;
+    return $entries;
   }
 
-  /** 
+  /**
    * Sync a single REX listing by listing id.
    * @param int $listingId - The ID to query REX by.
    */
-  public function syncRexListing(int $listingIdd)
+  public function syncRexListing(int $listingId)
   {
-    $result = CraftRex::getInstance()->RexApiService->rexAuthenticatedRequest('POST', 'listings/read', [ 'id' => $listingIdd ]);
-    if ($result['success'] && $result['data']['result']) {
-      $entry = $result['data']['result'];
-      $model = RexListingModel::create();
-      $model->listing_id = $entry['id'];
-      $model->listing_details = \GuzzleHttp\json_encode($entry);
-      $model->listing_status = $entry['system_listing_state'];
-      CraftRex::getInstance()->RexListingService->save($model);
-      return true;
-    }
-    return false;
+    $entry = CraftRex::getInstance()->RexApiService->findById($listingId);
+    CraftRex::getInstance()->RexListingService->save($entry);
+    return $entry;
   }
 }

@@ -19,35 +19,37 @@ use Craft;
  * Craft REX Variable
  *
  * Craft allows plugins to provide their own template variables, accessible from
- * the {{ craft }} global variable (e.g. {{ craft.craftrex }}).
+ * the {{ craft }} global variable (e.g. {{ craft.craftRex }}).
  *
  * https://craftcms.com/docs/plugins/variables
  *
  * @author    Ben Norman
  * @package   CraftRex
- * @since     1.0.2
+ * @since     1.1.0
  */
-class RexListingVariable
+class CraftRexVariable
 {
   // Public Methods
   // =========================================================================
-  /** 
+  /**
    * Get a specific property listing by ID.
    * @param int $id - The listing ID to query search for.
+   * @param bool $refresh - Optional. If true, will query fresh results from the api.
    * @return RexListingModel
    */
-  public function listing(int $id)
+  public function listing(int $id, ?bool $refresh=false)
   {
-    return CraftRex::getInstance()->RexListingService->findById($id);
+    return CraftRex::getInstance()->RexListingService->findById($id, $refresh);
   }
 
-  /** 
+  /**
    * Get all property listings.
    * @param string $status - Optional. The status to query listings by.
+   * @param bool $refresh - Optional. If true, will query fresh results from the api.
    * @return RexListingModel[]
    */
-  public function listings(?string $status = null)
+  public function listings(?string $status=null, ?bool $refresh=false)
   {
-    return CraftRex::getInstance()->RexListingService->findAll($status);
+    return CraftRex::getInstance()->RexListingService->findAll($status, $refresh);
   }
-} 
+}

@@ -73,8 +73,14 @@ class RexListingModel extends Model
    *
    * @return RexListingModel
    */
-  public static function create(): RexListingModel
+  public static function create($entry): RexListingModel
   {
-    return new self();
+    $model = new self();
+    if ($entry) {
+      $model->listing_id = $entry['id'];
+      $model->listing_details = \GuzzleHttp\json_encode($entry);
+      $model->listing_status = $entry['system_listing_state'];
+    }
+    return $model;
   }
 }

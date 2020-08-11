@@ -2,7 +2,7 @@
     "name": "headjam/craft-rex",
     "description": "A plugin that syncs REX data with Craft.",
     "type": "craft-plugin",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "keywords": [
         "craft",
         "cms",
@@ -37,8 +37,9 @@
         "documentationUrl": "https://github.com/headjamcreative/craft-rex/blob/master/README.md",
         "changelogUrl": "https://raw.githubusercontent.com/headjamcreative/craft-rex/master/CHANGELOG.md",
         "components": {
-            "rexApi": "headjam\\craftrex\\services\\RexApi",
-            "rexSync": "headjam\\craftrex\\services\\RexSync"
+            "rexApiService": "headjam\\craftrex\\services\\RexApiService",
+            "rexListingService": "headjam\\craftrex\\services\\RexListingService",
+            "rexSyncService": "headjam\\craftrex\\services\\RexSyncService"
         },
         "class": "headjam\\craftrex\\CraftRex"
     }

@@ -15,7 +15,7 @@
 
 {% import "_includes/forms" as forms %}
 
-{{ 
+{{
   forms.hidden({
     label: 'REX Token',
     instructions: 'The authorization token for queries.',
@@ -26,9 +26,9 @@
   })
 }}
 
-{{ 
+{{
   forms.autosuggestField({
-    label: 'REX Agency ID',
+    label: 'REX Agency ID!',
     instructions: 'The agency ID to query REX for listings.',
     id: 'rexAgencyId',
     name: 'rexAgencyId',
@@ -37,7 +37,7 @@
   })
 }}
 
-{{ 
+{{
   forms.autosuggestField({
     label: 'REX Username',
     instructions: 'The email address or username you use to log into REX.',
@@ -48,7 +48,7 @@
   })
 }}
 
-{{ 
+{{
   forms.autosuggestField({
     label: 'REX Password',
     instructions: 'The password you use to log into REX.',

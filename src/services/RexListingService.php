@@ -39,14 +39,14 @@ class RexListingService extends Component
   const EVENT_AFTER_SAVE = 'afterSave';
   const EVENT_BEFORE_SAVE = 'beforeSave';
 
-  /** 
+  /**
    * @var RexListingModel[]
    */
   private static $listingsById = [];
-  
-  
 
-  // Public Methods
+
+
+  // Private Methods
   // =========================================================================
   private function getRecordData($record)
   {
@@ -57,7 +57,7 @@ class RexListingService extends Component
     ];
   }
 
-  
+
 
   // Public Methods
   // =========================================================================
@@ -114,34 +114,35 @@ class RexListingService extends Component
     return false;
   }
 
-  /** 
+  /**
    * Find the given listing by id.
    * @param int $listingId - The id to query.
+   * @param bool $refresh - If true, will query the api regardless of record status.
    * @return RexListingModel|null
    */
-  public function findById(int $listingId)
+  public function findById(int $listingId, ?bool $refresh=false)
   {
     $record = RexListingRecord::findOne(['listing_id' => $listingId]);
-    if (!$record) {
+    if (!$record || $refresh) {
       $apiResult = CraftRex::getInstance()->RexSyncService->syncRexListing($listingId);
       if ($apiResult) {
         $record = RexListingRecord::findOne(['listing_id' => $listingId]);
       }
     }
-    if (!$record || empty($record)) {
-      $record = new RexListingRecord();
-      $record->listing_id = $listingId;
-    }
     return $this->getRecordData($record);
   }
 
-  /** 
+  /**
    * Find all property listings.
    * @param string $status - Optional. The status to query listings by.
+   * @param bool $refresh - If true, will query the api regardless of record status.
    * @return RexListingModel[]
    */
-  public function findAll(?string $status=null)
+  public function findAll(?string $status=null, ?bool $refresh=false)
   {
+    if ($refresh) {
+      CraftRex::getInstance()->RexSyncService->syncRexListings();
+    }
     if ($status) {
       $records = RexListingRecord::find(['listing_status' => $status])->all();
     } else {
