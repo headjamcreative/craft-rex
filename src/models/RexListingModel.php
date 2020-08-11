@@ -78,7 +78,7 @@ class RexListingModel extends Model
     $model = new self();
     if ($entry) {
       $model->listing_id = $entry['id'];
-      $model->listing_details = \GuzzleHttp\json_encode($entry);
+      $model->listing_details = $entry;
       $model->listing_status = $entry['system_listing_state'];
     }
     return $model;
