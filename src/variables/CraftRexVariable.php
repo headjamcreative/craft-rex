@@ -39,7 +39,8 @@ class CraftRexVariable
    */
   public function listing(int $id, ?bool $refresh=false)
   {
-    return CraftRex::getInstance()->RexListingService->findById($id, $refresh);
+    $entry = CraftRex::getInstance()->RexListingService->findById($id, $refresh);
+    return $this->asJson($entry);
   }
 
   /**
@@ -50,6 +51,7 @@ class CraftRexVariable
    */
   public function listings(?string $status=null, ?bool $refresh=false)
   {
-    return CraftRex::getInstance()->RexListingService->findAll($status, $refresh);
+    $entries = CraftRex::getInstance()->RexListingService->findAll($status, $refresh);
+    return $this->asJson($entries);
   }
 }
