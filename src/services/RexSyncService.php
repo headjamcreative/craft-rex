@@ -42,7 +42,9 @@ class RexSyncService extends Component
   {
     $entries = CraftRex::getInstance()->RexApiService->findAll($limit, $offset);
     foreach ($entries as $entry) {
-      CraftRex::getInstance()->RexListingService->save($entry);
+      if ($entry && $entry instanceof RexListingModel) {
+        CraftRex::getInstance()->RexListingService->save($entry);
+      }
     }
     return $entries;
   }
@@ -54,7 +56,9 @@ class RexSyncService extends Component
   public function syncRexListing(int $listingId)
   {
     $entry = CraftRex::getInstance()->RexApiService->findById($listingId);
-    CraftRex::getInstance()->RexListingService->save($entry);
+    if ($entry && $entry instanceof RexListingModel) {
+      CraftRex::getInstance()->RexListingService->save($entry);
+    }
     return $entry;
   }
 }

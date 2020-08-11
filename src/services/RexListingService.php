@@ -48,13 +48,17 @@ class RexListingService extends Component
 
   // Private Methods
   // =========================================================================
-  private function getRecordData($record)
+  /**
+   * Returns a data-ready record, or null if no record is supplied.
+   * @param RexListingRecord $record - The record to generate data for.
+   */
+  private function getRecordData(?RexListingRecord $record)
   {
-    return [
+    return $record && $record instanceof RexListingRecord ? [
       'listing_id' => $record->getAttribute('listing_id'),
       'listing_status' => $record->getAttribute('listing_status'),
       'listing_details' => $record->getAttribute('listing_details'),
-    ];
+    ] : null;
   }
 
 
