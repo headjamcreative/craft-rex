@@ -2,7 +2,7 @@
     "name": "headjam/craft-rex",
     "description": "A plugin that syncs REX data with Craft.",
     "type": "craft-plugin",
-    "version": "1.0.8",
+    "version": "1.0.10",
     "keywords": [
         "craft",
         "cms",
