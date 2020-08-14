@@ -86,7 +86,7 @@ class RexApiService extends Component
       //   ]
       // ],
       'extra_options' => [
-        'extra_fields' => ['advert_internet', 'images', 'subcategories']
+        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features']
       ]
     ]);
     if ($result['success'] && $result['data']['result']) {
