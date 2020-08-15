@@ -73,20 +73,8 @@ class RexApiService extends Component
       'offset' =>  $offset,
       'order_by' => [ 'authority_date_start' => 'desc' ],
       'result_format' => 'website_overrides_applied',
-      // 'criteria' => [
-      //   [
-      //     'name' => 'system_publication_status',
-      //     'type' => '=',
-      //     'value' => 'published'
-      //   ],
-      //   [
-      //     name => 'system_listing_state',
-      //     type => '=',
-      //     value => 'sold'
-      //   ]
-      // ],
       'extra_options' => [
-        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features']
+        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events']
       ]
     ]);
     if ($result['success'] && $result['data']['result']) {
