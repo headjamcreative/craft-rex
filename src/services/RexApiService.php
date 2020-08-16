@@ -74,7 +74,7 @@ class RexApiService extends Component
       'order_by' => [ 'authority_date_start' => 'desc' ],
       'result_format' => 'website_overrides_applied',
       'extra_options' => [
-        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events']
+        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links']
       ]
     ]);
     if ($result['success'] && $result['data']['result']) {
