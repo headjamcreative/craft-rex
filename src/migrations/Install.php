@@ -110,7 +110,7 @@ class Install extends Migration
                     'uid' => $this->uid(),
                     // Custom columns in the table
                     'listing_id' => $this->integer()->notNull(),
-                    'listing_details' => $this->json()->notNull(),
+                    'listing_details' => $this->text()->notNull(),
                     'listing_status' => $this->string(100)->notNull(),
                 ]
             );
@@ -141,13 +141,6 @@ class Install extends Migration
             'listing_status',
             true
         );
-        // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
     }
 
     /**
