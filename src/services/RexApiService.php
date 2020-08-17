@@ -95,7 +95,11 @@ class RexApiService extends Component
    */
   public function findById(int $listingId)
   {
-    $result = $this->rexAuthenticatedRequest('POST', 'listings/read', [ 'id' => $listingId ]);
+    $result = $this->rexAuthenticatedRequest('POST', 'published-listings/read', [
+      'id' => $listingId,
+      'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links'],
+      'result_format' => 'website_overrides_applied'
+    ]);
     if ($result['success'] && $result['data']['result']) {
       return RexListingModel::create($result['data']['result']);
     }
