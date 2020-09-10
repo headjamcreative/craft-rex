@@ -110,7 +110,7 @@ class Install extends Migration
                     'uid' => $this->uid(),
                     // Custom columns in the table
                     'listing_id' => $this->integer()->notNull(),
-                    'listing_details' => $this->json()->notNull(),
+                    'listing_details' => $this->longtext()->notNull(),
                     'listing_status' => $this->string(100)->notNull(),
                 ]
             );
