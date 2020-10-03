@@ -16,17 +16,6 @@
 {% import "_includes/forms" as forms %}
 
 {{
-  forms.hidden({
-    label: 'REX Token',
-    instructions: 'The authorization token for queries.',
-    id: 'rexAuthToken',
-    name: 'rexAuthToken',
-    value: settings['rexAuthToken'],
-    suggestEnvVars: true
-  })
-}}
-
-{{
   forms.autosuggestField({
     label: 'REX Agency ID',
     instructions: 'The agency ID to query REX for listings.',

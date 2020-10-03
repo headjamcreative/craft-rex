@@ -56,6 +56,8 @@ class CraftRex extends Plugin
    */
   public static $plugin;
 
+  public $rexAuthToken;
+
   // Public Properties
   // =========================================================================
 

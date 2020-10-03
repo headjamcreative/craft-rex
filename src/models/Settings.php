@@ -34,11 +34,6 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
     /**
-     * The auth token for any requests.
-     */
-    public $rexAuthToken = '';
-
-    /**
      * The id of the agency performing the REX query.
      *
      * @var number
@@ -65,7 +60,7 @@ class Settings extends Model
     // =========================================================================
     /**
      * @return string the parsed agency id
-     */ 
+     */
     public function getRexAgencyId(): string
     {
     return Craft::parseEnv($this->rexAgencyId);
@@ -73,7 +68,7 @@ class Settings extends Model
 
     /**
      * @return string the parsed username
-     */ 
+     */
     public function getRexUsername(): string
     {
     return Craft::parseEnv($this->rexUsername);
@@ -81,7 +76,7 @@ class Settings extends Model
 
     /**
      * @return string the parsed password
-     */ 
+     */
     public function getRexPassword(): string
     {
     return Craft::parseEnv($this->rexPassword);
