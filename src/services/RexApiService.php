@@ -71,7 +71,7 @@ class RexApiService extends Component
     $result = $this->rexAuthenticatedRequest('POST', 'published-listings/search', [
       'limit' => $limit,
       'offset' =>  $offset,
-      'order_by' => [ 'authority_date_start' => 'desc' ],
+      'order_by' => [ 'system_publication_time' => 'desc' ],
       'result_format' => 'website_overrides_applied',
       'extra_options' => [
         'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links']
