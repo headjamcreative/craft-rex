@@ -31,6 +31,8 @@ use craft\db\ActiveRecord;
  * @property int    $listing_id
  * @property string $listing_details
  * @property string $listing_status
+ * @property timestamp $publishDate
+ * @property date $soldDate
  *
  * @author    Ben Norman
  * @package   CraftRex
@@ -68,6 +70,21 @@ class RexListingRecord extends ActiveRecord
    */
   public $listing_status;
 
+  /**
+   * The date the property was published.
+   *
+   * @var string
+   */
+  public $publishDate;
+
+  /**
+   * The date the property was sold or leased.
+   *
+   * @var string
+   */
+  public $soldDate;
+
+  
   // Public Static Methods
   // =========================================================================
   /**

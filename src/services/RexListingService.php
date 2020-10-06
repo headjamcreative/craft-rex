@@ -58,6 +58,8 @@ class RexListingService extends Component
       'listing_id' => $record->getAttribute('listing_id'),
       'listing_status' => $record->getAttribute('listing_status'),
       'listing_details' => $record->getAttribute('listing_details'),
+      'publishDate' => $record->getAttribute('publishDate'),
+      'soldDate' => $record->getAttribute('soldDate'),
     ] : null;
   }
 
@@ -86,6 +88,8 @@ class RexListingService extends Component
     $record->setAttribute('listing_id', $model->listing_id);
     $record->setAttribute('listing_details', $model->listing_details);
     $record->setAttribute('listing_status', $model->listing_status);
+    $record->setAttribute('publishDate', $model->publishDate);
+    $record->setAttribute('soldDate', $model->soldDate);
     $record->validate();
     $model->addErrors($record->getErrors());
 
@@ -152,6 +156,20 @@ class RexListingService extends Component
     } else {
       $records = RexListingRecord::find()->all();
     }
+    return array_map(array($this, 'getRecordData'), $records);
+  }
+
+  /**
+   * Find the most recent property listings.
+   * @param bool $current=true - Current results if true, sold results if false.
+   * @param int $count=4 - The number of recent listings to return.
+   * @return RexListingModel[]
+   */
+  public function findRecent(bool $current=true, int $count=4)
+  {
+    $status = $current ? 'current' : 'sold';
+    $order = $current ? 'publishDate' : 'soldDate';
+    $records = RexListingRecord::find(['listing_status' => $status])->orderBy($order . ' desc')->limit($count)->all();
     return array_map(array($this, 'getRecordData'), $records);
   }
 }

@@ -112,6 +112,8 @@ class Install extends Migration
                     'listing_id' => $this->integer()->notNull(),
                     'listing_details' => $this->longtext()->notNull(),
                     'listing_status' => $this->string(100)->notNull(),
+                    'publishDate' => $this->integer(),
+                    'soldDate' => $this->date(),
                 ]
             );
         }
@@ -133,12 +135,16 @@ class Install extends Migration
                 'listing_id',
                 'listing_details',
                 'listing_status',
+                'publishDate',
+                'soldDate',
                 true
             ),
             '{{%craftrex_rexlistingrecord}}',
             'listing_id',
             'listing_details',
             'listing_status',
+            'publishDate',
+            'soldDate',
             true
         );
     }

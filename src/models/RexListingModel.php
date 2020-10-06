@@ -27,6 +27,8 @@ use craft\base\Model;
  * @property int    $listing_id
  * @property string $listing_details
  * @property string $listing_status
+ * @property timestamp $publishDate
+ * @property date $soldDate
  *
  * @author    Ben Norman
  * @package   CraftRex
@@ -58,11 +60,25 @@ class RexListingModel extends Model
   public $listing_details;
 
   /**
-   * The  status of the listing.
+   * The status of the listing.
    *
    * @var string
    */
   public $listing_status;
+
+  /**
+   * The date the property was published.
+   *
+   * @var string
+   */
+  public $publishDate;
+
+  /**
+   * The date the property was sold or leased.
+   *
+   * @var string
+   */
+  public $soldDate;
 
 
 
@@ -80,6 +96,8 @@ class RexListingModel extends Model
       $model->listing_id = $entry['id'];
       $model->listing_details = $entry;
       $model->listing_status = $entry['system_listing_state'];
+      $model->publishDate = $entry['system_publication_timestamp'];
+      $model->soldDate = $entry['state_date'];
     }
     return $model;
   }

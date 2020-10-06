@@ -52,4 +52,24 @@ class CraftRexVariable
   {
     return CraftRex::getInstance()->RexListingService->findAll($status, $refresh);
   }
+
+  /**
+   * Return the most recent four published listings.
+   * @param int $count=4 - The number of recent listings to return.
+   * @return RexListingModel[]
+   */
+  public function recentPublishedListings(int $count=4)
+  {
+    return CraftRex::getInstance()->RexListingService->findRecent(true, $count);
+  }
+
+  /**
+   * Return the most recent four sold listings.
+   * @param int $count=4 - The number of recent listings to return.
+   * @return RexListingModel[]
+   */
+  public function recentSoldListings(int $count=4)
+  {
+    return CraftRex::getInstance()->RexListingService->findRecent(false, $count);
+  }
 }
