@@ -47,7 +47,7 @@ class DefaultController extends Controller
     $rexLastSync = CraftRex::getInstance()->getSettings()->rexLastSync;
     $now = time();
     if ($now > ($rexLastSync + $rexFrequency)) {
-      CraftRex::getInstance()->RexSyncService->syncRexListings();
+      CraftRex::getInstance()->RexSyncService->syncRexListings(50);
     }
     return $this->actionStoredResults();
   }
