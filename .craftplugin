@@ -1,7 +1,7 @@
 {
   "pluginName": "Craft REX",
   "pluginDescription": "A plugin that syncs REX data with Craft.",
-  "pluginVersion": "1.2.1",
+  "pluginVersion": "1.2.2",
   "pluginAuthorName": "Ben Norman",
   "pluginVendorName": "headjam",
   "pluginAuthorUrl": "https://www.headjam.com.au",
