@@ -61,13 +61,6 @@ class Settings extends Model
      */
     public $rexFrequency = 60;
 
-    /**
-     * The time in seconds since last sync.
-     *
-     * @var int
-     */
-    public $rexLastSync = 0;
-
 
 
     // Public Methods
@@ -97,18 +90,6 @@ class Settings extends Model
     }
 
     /**
-     * @param int $seconds - The timestamp since last sync.
-     * @return int set the last sync
-     */
-    public function setRexLastSync(int $seconds): void
-    {
-      $plugin = CraftRex::getInstance();
-      Craft::$app->getPlugins()->savePluginSettings($plugin, array('rexLastSync' => $seconds));
-    }
-
-
-
-    /**
      * Returns the validation rules for attributes.
      *
      * Validation rules are used by [[validate()]] to check if attribute values are valid.
@@ -132,9 +113,6 @@ class Settings extends Model
             ['rexFrequency', 'number'],
             ['rexFrequency', 'required'],
             ['rexFrequency', 'default', 'value' => 60],
-            ['rexLastSync', 'number'],
-            ['rexLastSync', 'required'],
-            ['rexLastSync', 'default', 'value' => 0],
         ];
     }
 }
