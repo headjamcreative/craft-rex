@@ -48,7 +48,7 @@ class RexApiService extends Component
    */
   public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody)
   {
-    $token = CraftRex::getInstance()->rexAuthToken;
+    $token = CraftRex::getInstance()->getSettings()->rexAuthToken;
     if (!(isset($token) && $token !== '')) {
       $token = $this->rexLogin();
     }
@@ -171,7 +171,7 @@ class RexApiService extends Component
     $response = $this->rexRequest('POST', $this->authEndpoint, $auth, null);
     if ($response['success'] &&  $response['data']['result']) {
       $token = $response['data']['result'];
-      CraftRex::getInstance()->rexAuthToken = $token;
+      CraftRex::getInstance()->getSettings()->setRexAuthToken($token);
       return $token;
     }
     return false;

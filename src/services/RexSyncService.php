@@ -48,7 +48,8 @@ class RexSyncService extends Component
       }
     }
     if (!$all) {
-      CraftRex::getInstance()->rexLastSync = time();
+      $now = time();
+      CraftRex::getInstance()->getSettings()->setRexLastSync($now);
     }
     return $entries;
   }

@@ -55,11 +55,25 @@ class Settings extends Model
     public $rexPassword = '';
 
     /**
+     * The REX auth token.
+     *
+     * @var string
+     */
+    public $rexAuthToken = '';
+
+    /**
      * How many seconds to wait between each sync. Recommended minimum of 60.
      *
      * @var int
      */
     public $rexFrequency = 60;
+
+    /**
+     * The time in seconds since last sync.
+     *
+     * @var int
+     */
+    public $rexLastSync = 0;
 
 
 
@@ -90,6 +104,28 @@ class Settings extends Model
     }
 
     /**
+     * @param string $seconds - The auth token.
+     * @return void
+     */
+    public function setRexAuthToken(string $token): void
+    {
+      $plugin = CraftRex::getInstance();
+      Craft::$app->getPlugins()->savePluginSettings($plugin, array('rexAuthToken' => $token));
+    }
+
+    /**
+     * @param int $seconds - The timestamp since last sync.
+     * @return void
+     */
+    public function setRexLastSync(int $seconds): void
+    {
+      $plugin = CraftRex::getInstance();
+      Craft::$app->getPlugins()->savePluginSettings($plugin, array('rexLastSync' => $seconds));
+    }
+
+
+
+    /**
      * Returns the validation rules for attributes.
      *
      * Validation rules are used by [[validate()]] to check if attribute values are valid.
@@ -110,6 +146,9 @@ class Settings extends Model
             ['rexPassword', 'string'],
             ['rexPassword', 'required'],
             ['rexPassword', 'default', 'value' => ''],
+            ['rexAuthToken', 'string'],
+            ['rexAuthToken', 'required'],
+            ['rexAuthToken', 'default', 'value' => ''],
             ['rexFrequency', 'number'],
             ['rexFrequency', 'required'],
             ['rexFrequency', 'default', 'value' => 60],
