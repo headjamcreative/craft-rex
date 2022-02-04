@@ -43,6 +43,21 @@ class DefaultController extends Controller
    */
   public function actionIndex()
   {
+    $rexFrequency = CraftRex::getInstance()->getSettings()->rexFrequency;
+    $rexLastSync = CraftRex::getInstance()->getSettings()->rexLastSync;
+    $now = time();
+    if ($now > ($rexLastSync - $rexFrequency)) {
+      CraftRex::log('fired');
+      CraftRex::getInstance()->RexSyncService->syncRexListings();
+    }
+    return $this->actionStoredResults();
+  }
+
+  /**
+   * Query the most recently modified live results of the REX endpoint and sync them.
+   */
+  public function actionSync()
+  {
     CraftRex::getInstance()->RexSyncService->syncRexListings();
     return true;
   }
