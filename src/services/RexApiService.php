@@ -65,13 +65,15 @@ class RexApiService extends Component
    * Query all the published listings on the REX service.
    * @param int $limit - The limit to use in the query. Defaults to 100.
    * @param int $offset - The offset to use in the query. Defaults to 0.
+   * @param bool $all - If true, function will be called recursively until all results are obtained. Defaults to false.
+   * @param array $accumulator - The array to gather results in.
    */
-  public function findAll(?int $limit=100, ?int $offset=0, ?array $accumulator=[])
+  public function findAll(?int $limit=100, ?int $offset=0, ?bool $all=false, ?array $accumulator=[])
   {
     $result = $this->rexAuthenticatedRequest('POST', 'published-listings/search', [
       'limit' => $limit,
       'offset' =>  $offset,
-      'order_by' => [ 'system_publication_time' => 'DESC' ],
+      'order_by' => [ 'system_modtime' => 'DESC' ],
       'result_format' => 'website_overrides_applied',
       'extra_options' => [
         'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links']
@@ -82,8 +84,8 @@ class RexApiService extends Component
         $model = RexListingModel::create($entry);
         $accumulator[] = $model;
       }
-      if ($limit + $offset < $result['data']['result']['total']) {
-        return $this->findAll($limit, $limit + $offset, $accumulator);
+      if ($all && ($limit + $offset < $result['data']['result']['total'])) {
+        return $this->findAll($limit, $limit + $offset, $all, $accumulator);
       }
     }
     return $accumulator;

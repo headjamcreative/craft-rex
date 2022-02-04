@@ -32,19 +32,28 @@ class DefaultController extends Controller
    * @var bool|array Allows anonymous access to this controller's actions. The actions must be in 'kebab-case'
    * @access protected
    */
-  protected $allowAnonymous = ['index', 'live-results', 'stored-results'];
+  protected $allowAnonymous = ['index', 'sync-all', 'live-results', 'all-live-results', 'stored-results'];
 
 
 
   // Public Methods
   // =========================================================================
   /**
-   * Query the live results of the REX endpoint and sync them.
+   * Query the most recently modified live results of the REX endpoint and sync them.
    */
   public function actionIndex()
   {
     CraftRex::getInstance()->RexSyncService->syncRexListings();
-    return $this->actionStoredResults();
+    return true;
+  }
+
+  /**
+   * Query all the live results of the REX endpoint and sync them.
+   */
+  public function actionSyncAll()
+  {
+    CraftRex::getInstance()->RexSyncService->syncRexListings(100, 0, true);
+    return true;
   }
 
   /**
@@ -53,6 +62,15 @@ class DefaultController extends Controller
   public function actionLiveResults()
   {
     $response = CraftRex::getInstance()->RexApiService->findAll();
+    return $this->asJson($response);
+  }
+
+  /**
+   * Query all the live results of the REX endpoint.
+   */
+  public function actionAllLiveResults()
+  {
+    $response = CraftRex::getInstance()->RexApiService->findAll(100, 0, true);
     return $this->asJson($response);
   }
 

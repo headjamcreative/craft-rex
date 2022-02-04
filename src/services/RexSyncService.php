@@ -37,10 +37,11 @@ class RexSyncService extends Component
    * Retreieve the REST property listings.
    * @param int $limit - The limit to use in the query. Defaults to 100.
    * @param int $offset - The offset to use in the query. Defaults to 0.
+   * @param bool $all - If true, will attempt to query all listings. Defaults to false.
    */
-  public function syncRexListings(int $limit=100, int $offset=0)
+  public function syncRexListings(?int $limit=100, ?int $offset=0, ?bool $all=false)
   {
-    $entries = CraftRex::getInstance()->RexApiService->findAll($limit, $offset);
+    $entries = CraftRex::getInstance()->RexApiService->findAll($limit, $offset, $all);
     foreach ($entries as $entry) {
       if ($entry && $entry instanceof RexListingModel) {
         CraftRex::getInstance()->RexListingService->save($entry);
