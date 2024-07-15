@@ -76,7 +76,7 @@ class RexApiService extends Component
       'order_by' => [ 'system_modtime' => 'DESC' ],
       'result_format' => 'website_overrides_applied',
       'extra_options' => [
-        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links']
+        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans']
       ]
     ]);
     if ($result['success'] && $result['data']['result']) {
@@ -99,7 +99,7 @@ class RexApiService extends Component
   {
     $result = $this->rexAuthenticatedRequest('POST', 'published-listings/read', [
       'id' => $listingId,
-      'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links'],
+      'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans'],
       'result_format' => 'website_overrides_applied'
     ]);
     if ($result['success'] && $result['data']['result']) {

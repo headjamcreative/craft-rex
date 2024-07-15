@@ -152,7 +152,7 @@ class RexListingService extends Component
       CraftRex::getInstance()->RexSyncService->syncRexListings();
     }
     if ($status) {
-      $records = RexListingRecord::find(['listing_status' => $status])->all();
+      $records = RexListingRecord::find()->where(['listing_status' => $status])->all();
     } else {
       $records = RexListingRecord::find()->all();
     }
@@ -169,7 +169,7 @@ class RexListingService extends Component
   {
     $status = $current ? 'current' : 'sold';
     $order = $current ? 'publishDate' : 'soldDate';
-    $records = RexListingRecord::find(['listing_status' => $status])->orderBy($order . ' desc')->limit($count)->all();
+    $records = RexListingRecord::find()->where(['listing_status' => $status])->orderBy($order . ' desc')->limit(4)->all();
     return array_map(array($this, 'getRecordData'), $records);
   }
 }
