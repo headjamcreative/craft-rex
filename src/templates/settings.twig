@@ -50,16 +50,6 @@
 
 {{
   forms.textField({
-    label: 'REX Auth Token',
-    instructions: 'The auth token.',
-    id: 'rexAuthToken',
-    name: 'rexAuthToken',
-    value: settings['rexAuthToken']
-  })
-}}
-
-{{
-  forms.textField({
     label: 'Sync Frequency',
     instructions: 'How many seconds to wait between each sync. Minimum of 60.',
     type: 'number',
@@ -68,18 +58,5 @@
     min: 60,
     step: 1,
     value: settings['rexFrequency']
-  })
-}}
-
-{{
-  forms.textField({
-    label: 'Sync Last Sync',
-    instructions: 'Time in seconds since last sync.',
-    type: 'number',
-    id: 'rexLastSync',
-    name: 'rexLastSync',
-    min: 0,
-    step: 1,
-    value: settings['rexLastSync']
   })
 }}

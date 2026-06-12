@@ -48,8 +48,7 @@ class RexSyncService extends Component
       }
     }
     if (!$all) {
-      $now = time();
-      CraftRex::getInstance()->getSettings()->setRexLastSync($now);
+      \Craft::$app->cache->set('craftrex_last_sync', time(), 0);
     }
     return $entries;
   }

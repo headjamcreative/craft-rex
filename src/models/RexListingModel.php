@@ -80,6 +80,13 @@ class RexListingModel extends Model
    */
   public $soldDate;
 
+  /**
+   * Whether the listing is a "Sale" or "Rental".
+   *
+   * @var string
+   */
+  public $listing_type;
+
 
 
   // Public Methods
@@ -96,6 +103,7 @@ class RexListingModel extends Model
       $model->listing_id = $entry['id'];
       $model->listing_details = $entry;
       $model->listing_status = $entry['system_listing_state'];
+      $model->listing_type = $entry['listing_sale_or_rental'] ?? null;
       $model->publishDate = $entry['system_publication_timestamp'];
       $model->soldDate = $entry['state_date'];
     }

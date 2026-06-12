@@ -57,6 +57,7 @@ class RexListingService extends Component
     return $record && $record instanceof RexListingRecord ? [
       'listing_id' => $record->getAttribute('listing_id'),
       'listing_status' => $record->getAttribute('listing_status'),
+      'listing_type' => $record->getAttribute('listing_type'),
       'listing_details' => $record->getAttribute('listing_details'),
       'publishDate' => $record->getAttribute('publishDate'),
       'soldDate' => $record->getAttribute('soldDate'),
@@ -88,6 +89,7 @@ class RexListingService extends Component
     $record->setAttribute('listing_id', $model->listing_id);
     $record->setAttribute('listing_details', $model->listing_details);
     $record->setAttribute('listing_status', $model->listing_status);
+    $record->setAttribute('listing_type', $model->listing_type);
     $record->setAttribute('publishDate', $model->publishDate);
     $record->setAttribute('soldDate', $model->soldDate);
     $record->validate();
@@ -144,32 +146,39 @@ class RexListingService extends Component
    * Find all property listings.
    * @param string $status - Optional. The status to query listings by.
    * @param bool $refresh - If true, will query the api regardless of record status.
+   * @param string $type - Optional. Filter by "Sale" or "Rental".
    * @return RexListingModel[]
    */
-  public function findAll(?string $status=null, ?bool $refresh=false)
+  public function findAll(?string $status=null, ?bool $refresh=false, ?string $type=null)
   {
     if ($refresh) {
       CraftRex::getInstance()->RexSyncService->syncRexListings();
     }
+    $query = RexListingRecord::find();
     if ($status) {
-      $records = RexListingRecord::find()->where(['listing_status' => $status])->all();
-    } else {
-      $records = RexListingRecord::find()->all();
+      $query->andWhere(['listing_status' => $status]);
     }
-    return array_map(array($this, 'getRecordData'), $records);
+    if ($type) {
+      $query->andWhere(['listing_type' => $type]);
+    }
+    return array_map(array($this, 'getRecordData'), $query->all());
   }
 
   /**
    * Find the most recent property listings.
    * @param bool $current=true - Current results if true, sold results if false.
    * @param int $count=4 - The number of recent listings to return.
+   * @param string $type - Optional. Filter by "Sale" or "Rental".
    * @return RexListingModel[]
    */
-  public function findRecent(bool $current=true, int $count=4)
+  public function findRecent(bool $current=true, int $count=4, ?string $type=null)
   {
     $status = $current ? 'current' : 'sold';
     $order = $current ? 'publishDate' : 'soldDate';
-    $records = RexListingRecord::find()->where(['listing_status' => $status])->orderBy($order . ' desc')->limit(4)->all();
-    return array_map(array($this, 'getRecordData'), $records);
+    $query = RexListingRecord::find()->where(['listing_status' => $status])->orderBy($order . ' desc')->limit($count);
+    if ($type) {
+      $query->andWhere(['listing_type' => $type]);
+    }
+    return array_map(array($this, 'getRecordData'), $query->all());
   }
 }

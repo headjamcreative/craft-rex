@@ -15,14 +15,9 @@ use headjam\craftrex\models\RexListingModel;
 
 use Craft;
 use craft\base\Component;
-use craft\services\Plugins;
 
 /**
  * REX Api Service
- *
- * All of your plugin’s business logic should go in services, including saving data,
- * retrieving data, etc. They provide APIs that your controllers, template variables,
- * and other plugins can interact with.
  *
  * https://craftcms.com/docs/plugins/services
  *
@@ -48,8 +43,8 @@ class RexApiService extends Component
    */
   public function rexAuthenticatedRequest(string $method, string $endpoint, ?array $postBody)
   {
-    $token = CraftRex::getInstance()->getSettings()->rexAuthToken;
-    if (!(isset($token) && $token !== '')) {
+    $token = \Craft::$app->cache->get('craftrex_auth_token');
+    if (!$token) {
       $token = $this->rexLogin();
     }
     if ($token) {
@@ -76,7 +71,7 @@ class RexApiService extends Component
       'order_by' => [ 'system_modtime' => 'DESC' ],
       'result_format' => 'website_overrides_applied',
       'extra_options' => [
-        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans']
+        'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans', 'listing_sale_or_rental']
       ]
     ]);
     if ($result['success'] && $result['data']['result']) {
@@ -99,7 +94,7 @@ class RexApiService extends Component
   {
     $result = $this->rexAuthenticatedRequest('POST', 'published-listings/read', [
       'id' => $listingId,
-      'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans'],
+      'extra_fields' => ['advert_internet', 'images', 'subcategories', 'features', 'events', 'links', 'floorplans', 'listing_sale_or_rental'],
       'result_format' => 'website_overrides_applied'
     ]);
     if ($result['success'] && $result['data']['result']) {
@@ -117,9 +112,11 @@ class RexApiService extends Component
    * @param string $method - The method to query.
    * @param string $endpoint - The endpoint to query.
    * @param array [$postBody] - Any data to submit with the query.
+   * @param string [$token] - The bearer token.
+   * @param bool $retried - Prevents a second token-refresh attempt on repeated 401s.
    * @return array An array containing a status and either error or data properties.
    */
-  private function rexRequest(string $method, string $endpoint, ?array $postBody, ?string $token)
+  private function rexRequest(string $method, string $endpoint, ?array $postBody, ?string $token, bool $retried = false)
   {
     try {
       $client = new \GuzzleHttp\Client(['base_uri' => 'https://api.rexsoftware.com/v1/rex/']);
@@ -127,7 +124,7 @@ class RexApiService extends Component
         'http_errors' => false,
         'headers' => ['Content-Type' => 'application/json']
       ];
-      if (isset($token) && $token !== '') {
+      if ($token) {
         $postData['headers']['Authorization'] = "Bearer {$token}";
       }
       if (isset($postBody)) {
@@ -140,17 +137,17 @@ class RexApiService extends Component
           'success' => true,
           'data' => \GuzzleHttp\json_decode($body, true)
         ];
-      } elseif ($response->getStatusCode() === 401 && $endpoint !== $this->authEndpoint) {
+      } elseif ($response->getStatusCode() === 401 && $endpoint !== $this->authEndpoint && !$retried) {
         $newToken = $this->rexLogin();
         if ($newToken) {
-          return $this->rexAuthenticatedRequest($method, $endpoint, $postBody, $newToken);
+          return $this->rexRequest($method, $endpoint, $postBody, $newToken, true);
         }
       }
       return [
         'success' => false,
         'error' => 'Server Error'
       ];
-    } catch (Exception $error) {
+    } catch (\Exception $error) {
       return [
         'success' => false,
         'error' => $error->getMessage()
@@ -171,7 +168,7 @@ class RexApiService extends Component
     $response = $this->rexRequest('POST', $this->authEndpoint, $auth, null);
     if ($response['success'] &&  $response['data']['result']) {
       $token = $response['data']['result'];
-      CraftRex::getInstance()->getSettings()->setRexAuthToken($token);
+      \Craft::$app->cache->set('craftrex_auth_token', $token, 0);
       return $token;
     }
     return false;

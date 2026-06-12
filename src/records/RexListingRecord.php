@@ -84,6 +84,13 @@ class RexListingRecord extends ActiveRecord
    */
   public $soldDate;
 
+  /**
+   * Whether the listing is a "Sale" or "Rental".
+   *
+   * @var string
+   */
+  public $listing_type;
+
   
   // Public Static Methods
   // =========================================================================

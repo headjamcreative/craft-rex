@@ -10,18 +10,11 @@
 
 namespace headjam\craftrex\models;
 
-use headjam\craftrex\CraftRex;
-
 use Craft;
 use craft\base\Model;
 
 /**
  * CraftRex Settings Model
- *
- * This is a model used to define the plugin's settings.
- *
- * Models are containers for data. Just about every time information is passed
- * between services, controllers, and templates in Craft, it’s passed via a model.
  *
  * https://craftcms.com/docs/plugins/models
  *
@@ -55,25 +48,11 @@ class Settings extends Model
     public $rexPassword = '';
 
     /**
-     * The REX auth token.
-     *
-     * @var string
-     */
-    public $rexAuthToken = '';
-
-    /**
      * How many seconds to wait between each sync. Recommended minimum of 60.
      *
      * @var int
      */
     public $rexFrequency = 60;
-
-    /**
-     * The time in seconds since last sync.
-     *
-     * @var int
-     */
-    public $rexLastSync = 0;
 
 
 
@@ -104,35 +83,6 @@ class Settings extends Model
     }
 
     /**
-     * @param string $seconds - The auth token.
-     * @return void
-     */
-    public function setRexAuthToken(string $token): void
-    {
-      $plugin = CraftRex::getInstance();
-      Craft::$app->getPlugins()->savePluginSettings($plugin, array('rexAuthToken' => $token));
-    }
-
-    /**
-     * @param int $seconds - The timestamp since last sync.
-     * @return void
-     */
-    public function setRexLastSync(int $seconds): void
-    {
-      $plugin = CraftRex::getInstance();
-      Craft::$app->getPlugins()->savePluginSettings($plugin, array('rexLastSync' => $seconds));
-    }
-
-
-
-    /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
      * @return array
      */
     public function rules()
@@ -141,14 +91,7 @@ class Settings extends Model
             ['rexAgencyId', 'string'],
             ['rexAgencyId', 'required'],
             ['rexUsername', 'string'],
-            ['rexUsername', 'required'],
-            ['rexUsername', 'default', 'value' => ''],
             ['rexPassword', 'string'],
-            ['rexPassword', 'required'],
-            ['rexPassword', 'default', 'value' => ''],
-            ['rexAuthToken', 'string'],
-            ['rexAuthToken', 'required'],
-            ['rexAuthToken', 'default', 'value' => ''],
             ['rexFrequency', 'number'],
             ['rexFrequency', 'required'],
             ['rexFrequency', 'default', 'value' => 60],

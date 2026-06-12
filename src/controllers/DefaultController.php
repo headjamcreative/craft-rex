@@ -44,7 +44,7 @@ class DefaultController extends Controller
   public function actionIndex()
   {
     $rexFrequency = CraftRex::getInstance()->getSettings()->rexFrequency;
-    $rexLastSync = CraftRex::getInstance()->getSettings()->rexLastSync;
+    $rexLastSync = (int) \Craft::$app->cache->get('craftrex_last_sync') ?: 0;
     $now = time();
     if ($now > ($rexLastSync + $rexFrequency)) {
       CraftRex::getInstance()->RexSyncService->syncRexListings(50);
@@ -93,7 +93,8 @@ class DefaultController extends Controller
    */
   public function actionStoredResults()
   {
-    $entries = CraftRex::getInstance()->RexListingService->findAll();
+    $type = \Craft::$app->request->getParam('type');
+    $entries = CraftRex::getInstance()->RexListingService->findAll(null, false, $type);
     return $this->asJson($entries);
   }
 }
