@@ -34,9 +34,9 @@ class CraftRexVariable
    * @param bool $refresh - Optional. If true, will query fresh results from the api.
    * @return RexListingModel
    */
-  public function listing(int $id, ?bool $refresh=false)
+  public function listing(int $id, ?bool $refresh=false, ?string $type=null)
   {
-    return CraftRex::getInstance()->RexListingService->findById($id, $refresh);
+    return CraftRex::getInstance()->RexListingService->findById($id, $refresh, $type);
   }
 
   /**

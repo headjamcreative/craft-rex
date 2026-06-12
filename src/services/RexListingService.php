@@ -130,15 +130,20 @@ class RexListingService extends Component
    * @param bool $refresh - If true, will query the api regardless of record status.
    * @return RexListingModel|null
    */
-  public function findById(int $listingId, ?bool $refresh=false)
+  public function findById(int $listingId, ?bool $refresh=false, ?string $type=null)
   {
-    $record = RexListingRecord::findOne(['listing_id' => $listingId]);
+    $params = ['listing_id' => $listingId];
+    if ($type) {
+      $params['listing_type'] = $type;
+    }
+    $record = RexListingRecord::findOne($params);
     if (!$record || $refresh) {
       $apiResult = CraftRex::getInstance()->RexSyncService->syncRexListing($listingId);
       if ($apiResult) {
-        $record = RexListingRecord::findOne(['listing_id' => $listingId]);
+        $record = RexListingRecord::findOne($params);
       }
     }
+
     return $this->getRecordData($record);
   }
 
