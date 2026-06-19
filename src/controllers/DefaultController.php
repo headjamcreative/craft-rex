@@ -94,7 +94,8 @@ class DefaultController extends Controller
   public function actionStoredResults()
   {
     $type = \Craft::$app->request->getParam('type');
-    $entries = CraftRex::getInstance()->RexListingService->findAll(null, false, $type);
+    $status = \Craft::$app->request->getParam('status');
+    $entries = CraftRex::getInstance()->RexListingService->findAll($status, false, $type);
     return $this->asJson($entries);
   }
 }

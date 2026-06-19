@@ -144,7 +144,8 @@ class RexListingService extends Component
       }
     }
 
-    return $this->getRecordData($record);
+    $data = $this->getRecordData($record);
+    return ($data && $data['listing_status'] === 'withdrawn') ? null : $data;
   }
 
   /**
@@ -163,8 +164,14 @@ class RexListingService extends Component
     if ($status) {
       $query->andWhere(['listing_status' => $status]);
     }
+    if ($status !== 'withdrawn') {
+      $query->andWhere(['!=', 'listing_status', 'withdrawn']);
+    }
     if ($type) {
       $query->andWhere(['listing_type' => $type]);
+    }
+    if ($status && $status != 'current') {
+      $query->limit(100);
     }
     return array_map(array($this, 'getRecordData'), $query->all());
   }
