@@ -173,6 +173,8 @@ class RexListingService extends Component
     if ($status && $status != 'current') {
       $query->limit(100);
     }
+    $orderColumn = ($status && $status === 'sold') ? 'soldDate' : 'publishDate';
+    $query->orderBy($orderColumn . ' desc');
     return array_map(array($this, 'getRecordData'), $query->all());
   }
 
