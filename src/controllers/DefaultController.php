@@ -90,12 +90,20 @@ class DefaultController extends Controller
 
   /**
    * Query the stored listings.
+   * Optional `limit` param overrides the default cap (100 for non-current statuses); 0 means no limit.
    */
   public function actionStoredResults()
   {
     $type = \Craft::$app->request->getParam('type');
     $status = \Craft::$app->request->getParam('status');
-    $entries = CraftRex::getInstance()->RexListingService->findAll($status, false, $type);
-    return $this->asJson($entries);
+    $service = CraftRex::getInstance()->RexListingService;
+    $limit = \Craft::$app->request->getParam('limit');
+    $limit = is_numeric($limit) ? max(0, (int) $limit) : null;
+    $entries = $service->findAll($status, false, $type, $limit);
+    $response = $this->asJson($entries);
+    // The body stays a plain array; the uncapped total is exposed via a header.
+    $response->headers->set('X-Total-Count', (string) $service->countAll($status, $type));
+    $response->headers->set('Access-Control-Expose-Headers', 'X-Total-Count');
+    return $response;
   }
 }

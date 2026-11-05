@@ -44,11 +44,12 @@ class CraftRexVariable
    * @param string $status - Optional. Filter by listing status.
    * @param bool $refresh - Optional. If true, will query fresh results from the api.
    * @param string $type - Optional. Filter by "Sale" or "Rental".
+   * @param int $limit - Optional. Overrides the default cap (100 for non-"current" statuses). 0 means no limit.
    * @return RexListingModel[]
    */
-  public function listings(?string $status=null, ?bool $refresh=false, ?string $type=null)
+  public function listings(?string $status=null, ?bool $refresh=false, ?string $type=null, ?int $limit=null)
   {
-    return CraftRex::getInstance()->RexListingService->findAll($status, $refresh, $type);
+    return CraftRex::getInstance()->RexListingService->findAll($status, $refresh, $type, $limit);
   }
 
   /**

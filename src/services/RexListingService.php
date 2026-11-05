@@ -40,6 +40,11 @@ class RexListingService extends Component
   const EVENT_BEFORE_SAVE = 'beforeSave';
 
   /**
+   * The default maximum number of listings returned by findAll() for non-"current" statuses (e.g. sold, leased).
+   */
+  const DEFAULT_LIMIT = 100;
+
+  /**
    * @var RexListingModel[]
    */
   private static $listingsById = [];
@@ -149,17 +154,13 @@ class RexListingService extends Component
   }
 
   /**
-   * Find all property listings.
+   * Build the base query shared by findAll() and countAll(), without limit or ordering.
    * @param string $status - Optional. The status to query listings by.
-   * @param bool $refresh - If true, will query the api regardless of record status.
    * @param string $type - Optional. Filter by "Sale" or "Rental".
-   * @return RexListingModel[]
+   * @return \yii\db\ActiveQuery
    */
-  public function findAll(?string $status=null, ?bool $refresh=false, ?string $type=null)
+  private function buildListingQuery(?string $status=null, ?string $type=null)
   {
-    if ($refresh) {
-      CraftRex::getInstance()->RexSyncService->syncRexListings();
-    }
     $query = RexListingRecord::find();
     if ($status) {
       $query->andWhere(['listing_status' => $status]);
@@ -170,12 +171,45 @@ class RexListingService extends Component
     if ($type) {
       $query->andWhere(['listing_type' => $type]);
     }
-    if ($status && $status != 'current') {
-      $query->limit(100);
+    return $query;
+  }
+
+  /**
+   * Find all property listings.
+   * By default, non-"current" statuses are capped at DEFAULT_LIMIT (100) results, and "current" is uncapped.
+   * Use countAll() to get the uncapped total.
+   * @param string $status - Optional. The status to query listings by.
+   * @param bool $refresh - If true, will query the api regardless of record status.
+   * @param string $type - Optional. Filter by "Sale" or "Rental".
+   * @param int $limit - Optional. Overrides the default cap for any status. 0 means no limit.
+   * @return RexListingModel[]
+   */
+  public function findAll(?string $status=null, ?bool $refresh=false, ?string $type=null, ?int $limit=null)
+  {
+    if ($refresh) {
+      CraftRex::getInstance()->RexSyncService->syncRexListings();
+    }
+    $query = $this->buildListingQuery($status, $type);
+    if ($limit === null && $status && $status != 'current') {
+      $limit = self::DEFAULT_LIMIT;
+    }
+    if ($limit) {
+      $query->limit($limit);
     }
     $orderColumn = ($status && $status === 'sold') ? 'soldDate' : 'publishDate';
     $query->orderBy($orderColumn . ' desc');
     return array_map(array($this, 'getRecordData'), $query->all());
+  }
+
+  /**
+   * Count all stored property listings matching the given filters, ignoring the findAll() result cap.
+   * @param string $status - Optional. The status to query listings by.
+   * @param string $type - Optional. Filter by "Sale" or "Rental".
+   * @return int
+   */
+  public function countAll(?string $status=null, ?string $type=null)
+  {
+    return (int) $this->buildListingQuery($status, $type)->count();
   }
 
   /**
